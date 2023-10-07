@@ -8,6 +8,7 @@ output: github_document
 library(tidyverse)
 ```
 
+## Problem 1
 ```{r}
 library(p8105.datasets)
 data("instacart")
@@ -16,15 +17,53 @@ data("instacart")
 ```{r}
 head(instacart)
 ```
-The `instacart`
-write a short description of the dataset, noting the size and structure of the data, describing some key variables, and giving illustrative examples of observations.
+The `instacart` dataset has `r nrow(instacart)` number of rows and `r ncol(instacart)` number of columns. Each row is an order placed. Key variables contain the order id, product id, user id, the order date, product id and the aisle it's in.
+[giving illustrative examples of observations.]
 
-How many aisles are there, and which aisles are the most items ordered from?
+```{r}
+aisle_num = length(unique(instacart$aisle_id))
+```
+```{r}
+aisle_most = instacart |>
+  group_by(aisle) |>
+  summarise(num_products = n()) |>
+  arrange(desc(num_products))
+
+aisle_most
+```
+
+* There are `r aisle_num` number of aisles, and `r aisle_most$aisle[1]` is the aisle where most items are ordered from.
+
 Make a plot that shows the number of items ordered in each aisle, limiting this to aisles with more than 10000 items ordered. Arrange aisles sensibly, and organize your plot so others can read it.
+```{r}
+instacart |>
+  group_by(aisle) |>
+  summarize(items_num = n()) |>
+  filter(items_num > 10000) |>
+  arrange(aisle) |>
+  ggplot(aes(x=aisle, y=items_num)) +
+  geom_bar(stat="identity", fill = "skyblue", color = "black") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(x = "Aisle", y = "Number of Items", title = "Items in 39 Aisles")
+```
+
 Make a table showing the three most popular items in each of the aisles “baking ingredients”, “dog food care”, and “packaged vegetables fruits”. Include the number of times each item is ordered in your table.
+```{r message=FALSE, warning=FALSE}
+instacart |>
+  group_by(aisle, product_name) |>
+  summarize(count_item = n()) |>
+  filter(is.element(aisle, c("baking ingredients", 
+                             "dog food care", "packaged vegetables fruits"))) |>
+  filter(min_rank(desc(count_item)) < 4) |>
+  knitr::kable()
+```
+
 Make a table showing the mean hour of the day at which Pink Lady Apples and Coffee Ice Cream are ordered on each day of the week; format this table for human readers (i.e. produce a 2 x 7 table).
 
 ```{r}
 
 ```
 
+
+## Problem 2
