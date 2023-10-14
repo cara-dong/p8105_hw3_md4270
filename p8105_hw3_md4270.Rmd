@@ -163,6 +163,36 @@ ggplot(ny_data, aes(x = response, y = data_value, fill = response)) +
 
 
 ## Problem 3
+Your final dataset should include all originally observed variables; exclude participants less than 21 years of age, and those with missing demographic data; and encode data with reasonable variable classes (i.e. not numeric, and using factors with the ordering of tables and plots in mind).
+```{r message=FALSE}
+library(readr)
+nhanes_accel = read_csv("nhanes_accel.csv")
+nhanes_covar = read_csv("nhanes_covar.csv", skip = 4)
+```
+
+```{r}
+nhanes_accel_cleaned = 
+  nhanes_accel |>
+  janitor::clean_names()
+  #pivot_longer(
+    #bdi_score_bl:bdi_score_12m,
+    #names_to = "visit", 
+    #values_to = "bdi")
+```
+
+```{r}
+nhanes_covar_cleaned =
+  nhanes_covar |>
+  janitor::clean_names() |>
+  mutate(
+      sex = recode(sex, "1" = "male", "2" = "female"),
+      education = recode(education, "1" = "Less than high school", "2" = "High school equivalent", "3" = "More than high school")
+      )
+
+nhanes_covar_cleaned
+```
+
+Produce a reader-friendly table for the number of men and women in each education category, and create a visualization of the age distributions for men and women in each education category. Comment on these items.
 ```{r}
 
 ```
