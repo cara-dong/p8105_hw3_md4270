@@ -27,14 +27,13 @@ aisle_most = instacart |>
   summarise(num_products = n()) |>
   arrange(desc(num_products))
 
-aisle_most
+head(aisle_most)
 ```
 
-* There are `r aisle_num` number of aisles, and `r aisle_most$aisle[1]` is the aisle where most items are ordered from.
+There are `r aisle_num` number of aisles, and `r aisle_most$aisle[1]` is the aisle where most items are ordered from, `r aisle_most$aisle[2]` following it.
 
 Make a plot that shows the number of items ordered in each aisle, limiting this to aisles with more than 10000 items ordered. Arrange aisles sensibly, and organize your plot so others can read it.
 ```{r message=FALSE, warning=FALSE}
-
 instacart |> 
   count(aisle) |> 
   filter(n > 10000) |> 
@@ -65,7 +64,7 @@ Make a table showing the mean hour of the day at which Pink Lady Apples and Coff
 instacart |>
   filter(product_name %in% c("Pink Lady Apples", "Coffee Ice Cream")) |>
   group_by(product_name, order_dow) |>
-  summarize(mean_hour = mean(order_hour_of_day)) |>
+  summarise(mean_hour = mean(order_hour_of_day)) |>
   pivot_wider(
     names_from = order_dow, 
     values_from = mean_hour) |>
@@ -83,7 +82,7 @@ data("brfss_smart2010")
 head(brfss_smart2010)
 ```
 Clean the data based on instructions:
-```{r message=FALSE, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 brfss_smart2010_cleaned = 
   brfss_smart2010 |>
   janitor::clean_names() |>
@@ -99,17 +98,17 @@ locations_2002 =
   brfss_smart2010_cleaned |>
   filter(year==2002) |>
   group_by(year, state) |>
-  summarize(num_location = n_distinct(county)) |>
+  summarise(num_location = n_distinct(county)) |>
   filter(num_location >= 7)
 ```
 In 2002, states `r locations_2002$state` were observed at 7 or more locations. 
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 locations_2010 = 
   brfss_smart2010_cleaned |>
   filter(year==2010) |>
   group_by(year, state) |>
-  summarize(num_location = n_distinct(county)) |>
+  summarise(num_location = n_distinct(county)) |>
   filter(num_location >= 7)
 ```
 In 2010, states `r locations_2002$state` were observed at 7 or more locations. 
@@ -124,7 +123,7 @@ brfss_smart2010_cleaned |>
   mutate(avg_data_value = mean(data_value, na.rm = TRUE)) |>
   select(year, state, avg_data_value)
   
-avg_values
+head(avg_values)
 ```
 
 Make a “spaghetti” plot of this average value over time within a state (that is, make a plot showing a line for each state across years – the geom_line geometry and group aesthetic will help).
@@ -137,8 +136,9 @@ ggplot(avg_values, aes(x = year, y = avg_data_value, color = state, group = stat
 
 Make a two-panel plot showing, for the years 2006, and 2010, distribution of data_value for responses (“Poor” to “Excellent”) among locations in NY State:
 ```{r message=FALSE, warning=FALSE}
-ny_data = brfss_smart2010_cleaned |>
-filter(brfss_smart2010_cleaned$state == "NY" 
+ny_data = 
+  brfss_smart2010_cleaned |>
+  filter(brfss_smart2010_cleaned$state == "NY" 
        & brfss_smart2010_cleaned$year %in% c(2006, 2010))
 ```
 ```{r message=FALSE, warning=FALSE}
@@ -181,8 +181,6 @@ nhanes_covar_cleaned =
          education = factor(education)) |>
   filter(age >= 21) |>
   drop_na()
-
-nhanes_covar_cleaned
 ```
 Now, we join the two cleaned tables to include all valid observations:
 ```{r message=FALSE, warning=FALSE}
@@ -193,7 +191,7 @@ Produce a reader-friendly table for the number of men and women in each educatio
 nhanes_sex_tbl = 
   nhanes |>
   group_by(education, sex) |>
-  summarize(num_people = n_distinct(seqn))|>
+  summarise(num_people = n_distinct(seqn))|>
   pivot_wider(names_from = sex, values_from = num_people) |>
   arrange(education) |>
   knitr::kable(title = "Number of Men and Women in Each Education Category", 
@@ -222,7 +220,8 @@ Among those who participated in the NHANES study, the group with "less than high
 
 Using the tidied dataset from above, aggregate across minutes to create a total activity variable for each participant:
 ```{r message=FALSE, warning=FALSE}
-total_act = nhanes |>
+total_act = 
+  nhanes |>
   mutate(total_activity = rowSums(across(min1:min1440), na.rm = TRUE))
 ```
 Make a 3-panel plot:
