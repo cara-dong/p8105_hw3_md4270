@@ -260,4 +260,4 @@ ggplot(total_act_24hrs, aes(x = time, y = mean, color = sex)) +
        y = "Activity")
 ```
 
-Comment on plots: 
+Comment on plots: comments
